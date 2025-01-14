@@ -5,9 +5,9 @@ const cors = require('cors');
 
 const app = express();
 
-// Update CORS configuration to allow any origin
+// Update CORS configuration for express and socket.io
 const corsOptions = {
-  origin: '*',  // Allow all origins
+  origin: 'https://web-notification-frontend.vercel.app',  // Allow only your frontend URL
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 };
@@ -17,8 +17,10 @@ app.use(cors(corsOptions));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',  // Same as above: Allow any origin
+    origin: 'https://web-notification-frontend.vercel.app',  // Allow only your frontend URL for WebSocket connections
     methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    transports: ['websocket', 'polling'],  // Allow both WebSocket and polling
   },
 });
 
@@ -30,7 +32,7 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('sendNotification', (data) => {
-    io.emit('receiveNotification', data); // Send to all connected clients
+    io.emit('receiveNotification', data);  // Send to all connected clients
   });
 
   socket.on('disconnect', () => {
