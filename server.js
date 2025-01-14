@@ -5,12 +5,24 @@ const cors = require('cors');
 
 const app = express();
 
-// Update CORS configuration
+// List of allowed origins (both local and production URLs)
+const allowedOrigins = [
+  'http://localhost:3000', // Local frontend
+  'https://web-notification-frontend.vercel.app', // Production frontend
+];
+
+// Dynamic CORS configuration
 const corsOptions = {
-  origin: 'https://web-notification-frontend.vercel.app', // Allow only your frontend URL
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Block the request
+    }
+  },
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
-  credentials: true, // Include credentials if required
+  credentials: true, // Allow credentials
 };
 
 app.use(cors(corsOptions));
@@ -18,11 +30,11 @@ app.use(cors(corsOptions));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://web-notification-frontend.vercel.app', // Frontend URL
+    origin: allowedOrigins, // Same as CORS origins
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
-    credentials: true, // Allow credentials for socket connections
-    transports: ['websocket', 'polling'], // Support both WebSocket and polling
+    credentials: true,
+    transports: ['websocket', 'polling'], // Support WebSocket and polling
   },
 });
 
