@@ -1,15 +1,21 @@
-const express = require('express');
-const http = require('http');
 const { Server } = require('socket.io');
+const http = require('http');
 const cors = require('cors');
+const express = require('express');
 
 const app = express();
-app.use(cors());
+
+// Set up CORS
+const allowedOrigin = process.env.NODE_ENV === 'production' ? 'https://web-notification-rho.vercel.app' : 'http://localhost:3000';
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST'],
+}));
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // React app URL
+    origin: allowedOrigin,
     methods: ['GET', 'POST'],
   },
 });
@@ -26,6 +32,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log('Server running on http://localhost:5000');
-});
+// Export as serverless function
+module.exports = (req, res) => {
+  server(req, res); // Let Vercel handle the HTTP request
+};
