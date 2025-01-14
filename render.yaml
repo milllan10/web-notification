@@ -1,18 +1,16 @@
 services:
-  # Backend service (Node.js WebSocket Server)
   - type: web
     name: backend-service
     env: node
     branch: main  # Or the branch you want to deploy
     buildCommand: npm install  # Install dependencies in the root folder (where package.json is)
-    startCommand: node api/server.js  # Start the server from the 'api' folder
+    startCommand: npm start  # Use the start script from package.json
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: "5000"  # You can use process.env.PORT if you want to use Render's dynamic port
 
-  # Frontend service (React or another frontend framework)
   - type: web
     name: frontend-service
     env: static
