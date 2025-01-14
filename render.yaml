@@ -4,8 +4,8 @@ services:
     name: backend-service
     env: node
     branch: main  # Or the branch you want to deploy
-    buildCommand: npm install  # Install dependencies in the root folder (where server.js is)
-    startCommand: node server.js  # Start the server in the root folder
+    buildCommand: npm install  # Install dependencies in the root folder (where package.json is)
+    startCommand: node api/server.js  # Start the server from the 'api' folder
     envVars:
       - key: NODE_ENV
         value: production
