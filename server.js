@@ -9,11 +9,13 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // React app URL
+    origin: 'https://web-notification-frontend.vercel.app/', // React app URL
     methods: ['GET', 'POST'],
   },
 });
-
+app.get('/', (req, res) => {
+  res.send('Connected to Backend');
+});
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
