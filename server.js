@@ -4,18 +4,28 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+// Update CORS configuration to allow any origin
+const corsOptions = {
+  origin: '*',  // Allow all origins
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+};
+
+app.use(cors(corsOptions));
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://web-notification-frontend.vercel.app/', // React app URL
+    origin: '*',  // Same as above: Allow any origin
     methods: ['GET', 'POST'],
   },
 });
+
 app.get('/', (req, res) => {
   res.send('Connected to Backend');
 });
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
